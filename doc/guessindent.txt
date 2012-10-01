@@ -1,44 +1,55 @@
-*detectindent.txt*	The Detect Indent Plugin	     1.0, Jan 04, 2005
+*guessindent.txt*        The Guess Indent Plugin          1.0, October 1, 2012
 
-Author:  Ciaran McCreesh <ciaran.mccreesh at googlemail.com>
-
-==============================================================================
-1. Contents				*detectindent* *detectindent-contents*
-
-    1. Contents                                    |detectindent-contents|
-    2. :DetectIndent Command                               |:DetectIndent|
-	Settings                                   |detectindent-settings|
-    3. Uptime ChangeLog                                 |uptime-changelog|
+Author:  Alex Ogier <alex.ogier.NO@SPAM.gmail.com>
 
 ==============================================================================
-2. :DetectIndent Command				       *:DetectIndent*
+1. Contents                               *guessindent* *guessindent-contents*
 
-	The :DetectIndent command tries to intelligently set the 'shiftwidth',
-	'expandtab' and 'tabstop' options based upon the existing settings in
-	use in the active file.
+    1. Contents                                     |guessindent-contents|
+    2. :DetectIndent Command                                |:GuessIndent|
+        Settings                                    |guessindent-settings|
+    3. GuessIndent ChangeLog                       |guessindent-changelog|
 
-    Settings					       *detectindent-settings*
+==============================================================================
+2. :GuessIndent Command                                         *:GuessIndent*
 
-	When the correct value for 'expandtab' cannot be determined, it will
-	usually retain its existing value. To specify that 'expandtab' should
-	be used where autodetection is impossible, set: >
-		:let g:detectindent_preferred_expandtab = 1
-<	in your |vimrc| file.
+        The :GuessIndent command tries to determine whether the active file
+        uses tabs or spaces for indentation as a convention. If the file
+        appers to use spaces for indentation, the plugin will try to
+        intelligently set the 'shiftwidth' and 'softtabstop' options.
 
-	To set a preferred value for 'shiftwidth' and 'tabstop' when they
-	cannot be automatically detected, set: >
-		:let g:detectindent_preferred_indent = 4
+        You can run this command automatically every time a file is loaded.
+        To do that, set: >
+                autocmd BufReadPost * :GuessIndent
 <       in your |vimrc| file.
 
-	To set limit for number of lines that will be analysed set: >
-		:let g:detectindent_max_lines_to_analyse = 1024
-<	in your |vimrc| file.
+    Settings                                            *guessindent-settings*
+
+        If at least 3/4 of the lines in the active file appear to use spaces
+        for indentation, then 'expandtab' will be set. If at least 3/4 of
+        the lines in the active file use tabs for indentation, 'noexpandtab'
+        will be set. If neither is true, then the file is considered to be
+        ambiguous.
+
+        If the file sometimes uses spaces and sometimes uses tabs for
+        indentation ambiguously, spaces are arbitrarily chosen as the
+        indentation method and 'expandtab' is set. If you prefer to use
+        tabs in this case and set 'noexpandtab', set: >
+                let g:guessindent_prefer_tabs = 1
+<       in your |vimrc| file.
+
+        For performance reasons, |:GuessIndent| reads a limited number of
+        lines from the active file. The default is currently to read a
+        maximum of 1024 lines. To change this maximum, set: >
+                let g:guessindent_max_lines_to_analyse = 2048
+<       in your |vimrc| file.
 
 ==============================================================================
-3. DetectIndent ChangeLog			      *detectindent-changelog*
+3. GuessIndent ChangeLog                               *guessindent-changelog*
 
-	v1.0 (20050105)
-	    * initial release after discussion on irc.freenode.net:#vim
+        v1.0 (20121001)
+            * forked DetectIndent plugin by Ciaran McCreesh from
+                https://github.com/ciaranm/detectindent
 
 ==============================================================================
-vim:tw=78:ts=8:ft=help
+vim:tw=78:et:sw=4:sts=4:ft=help

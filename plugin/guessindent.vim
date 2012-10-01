@@ -1,26 +1,26 @@
-" Name:          detectindent (global plugin)
+" Name:          guessindent
 " Version:       1.0
-" Author:        Ciaran McCreesh <ciaran.mccreesh at googlemail.com>
-" Updates:       http://github.com/ciaranm/detectindent
-" Purpose:       Detect file indent settings
+" Author:        Alex Ogier <alex.ogier.NO@SPAM.gmail.com>
+" Updates:       http://github.com/ogier/guessindent
+" Purpose:       Guess file indent settings
 "
 " License:       You may redistribute this plugin under the same terms as Vim
 "                itself.
 "
-" Usage:         :DetectIndent
+" Usage:         :GuessIndent
 "
 "                " to prefer expandtab to noexpandtab in ambiguous cases:
-"                :let g:detectindent_preferred_expandtab = 1
+"                :let g:guessindent_prefer_tabs = 1
 "
-" Requirements:  Untested on Vim versions below 6.2
+" Requirements:  Untested on Vim versions below 7.2
 
-if exists("loaded_detectindent")
+if exists("loaded_guessindent")
     finish
 endif
-let loaded_detectindent = 1
+let loaded_guessindent = 1
 
-if !exists('g:detectindent_verbosity')
-    let g:detectindent_verbosity = 1
+if !exists('g:guessindent_verbosity')
+    let g:guessindent_verbosity = 1
 endif
 
 fun! <SID>HasCStyleComments()
@@ -40,21 +40,21 @@ fun! <SID>IsCommentLine(line)
     return <SID>HasCStyleComments() && a:line =~ '^\s\+//'
 endfun
 
-fun! <SID>DetectIndent()
+fun! <SID>GuessIndent()
     let l:leading_tabs                = 0
     let l:leading_spaces              = 0
     let l:shortest_leading_spaces_run = 0
     let l:shortest_leading_spaces_idx = 0
     let l:longest_leading_spaces_run  = 0
     let l:max_lines                   = 1024
-    if exists("g:detectindent_max_lines_to_analyse")
-      let l:max_lines = g:detectindent_max_lines_to_analyse
+    if exists("g:guessindent_max_lines_to_analyse")
+      let l:max_lines = g:guessindent_max_lines_to_analyse
     endif
 
     let verbose_msg = ''
-    if ! exists("b:detectindent_cursettings")
+    if ! exists("b:guessindent_cursettings")
       " remember initial values for comparison
-      let b:detectindent_cursettings = {'expandtab': &et, 'shiftwidth': &sw, 'softtabstop': &sts}
+      let b:guessindent_cursettings = {'expandtab': &et, 'shiftwidth': &sw, 'softtabstop': &sts}
     endif
 
     let l:idx_end = line("$")
@@ -125,7 +125,7 @@ fun! <SID>DetectIndent()
         if l:leading_tabs >= 3 * l:leading_spaces
             setl noexpandtab
         elseif l:leading_tabs >= 0.33 * l:leading_spaces &&
-                \ ! exists("g:detectindent_preferred_expandtab")
+                \ ! exists("g:guessindent_preferred_expandtab")
             setl noexpandtab
         else
             setl expandtab
@@ -137,7 +137,7 @@ fun! <SID>DetectIndent()
         let l:verbose_msg = "Detected no spaces and no tabs"
     endif
 
-    if &verbose >= g:detectindent_verbosity
+    if &verbose >= g:guessindent_verbosity
         echo l:verbose_msg
                     \ ."; leading_tabs:" l:leading_tabs
                     \ .", leading_spaces:" l:leading_spaces
@@ -146,7 +146,7 @@ fun! <SID>DetectIndent()
                     \ .", longest_leading_spaces_run:" l:longest_leading_spaces_run
 
         let changed_msg = []
-        for [setting, oldval] in items(b:detectindent_cursettings)
+        for [setting, oldval] in items(b:guessindent_cursettings)
           exec 'let newval = &'.setting
           if oldval != newval
             let changed_msg += [ setting." changed from ".oldval." to ".newval ]
@@ -158,5 +158,5 @@ fun! <SID>DetectIndent()
     endif
 endfun
 
-command! -bar -nargs=0 DetectIndent call <SID>DetectIndent()
+command! -bar -nargs=0 GuessIndent call <SID>GuessIndent()
 
