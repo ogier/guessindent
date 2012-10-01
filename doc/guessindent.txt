@@ -28,8 +28,9 @@ Author:  Alex Ogier <alex.ogier.NO@SPAM.gmail.com>
         If at least 3/4 of the lines in the active file appear to use spaces
         for indentation, then 'expandtab' will be set. If at least 3/4 of
         the lines in the active file use tabs for indentation, 'noexpandtab'
-        will be set. If neither is true, then the file is considered to be
-        ambiguous.
+        will be set. If no tabs or spaces are used (for example if the file
+        is new) then the command does nothing. If there is a roughly even mix
+        then the file is considered to be ambiguous.
 
         If the file sometimes uses spaces and sometimes uses tabs for
         indentation ambiguously, spaces are arbitrarily chosen as the
