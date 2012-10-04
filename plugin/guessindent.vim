@@ -126,7 +126,7 @@ fun! <SID>GuessIndent()
             setl noexpandtab
             let &l:softtabstop = 0
         elseif l:leading_tabs >= 0.33 * l:leading_spaces &&
-                \ ! exists("g:guessindent_preferred_expandtab")
+                \ exists("g:guessindent_prefer_tabs")
             setl noexpandtab
             let &l:softtabstop = 0
         else
