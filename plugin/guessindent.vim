@@ -124,9 +124,11 @@ fun! <SID>GuessIndent()
 
         if l:leading_tabs >= 3 * l:leading_spaces
             setl noexpandtab
+            let &l:softtabstop = 0
         elseif l:leading_tabs >= 0.33 * l:leading_spaces &&
                 \ ! exists("g:guessindent_preferred_expandtab")
             setl noexpandtab
+            let &l:softtabstop = 0
         else
             setl expandtab
             let &l:shiftwidth  = l:shortest_leading_spaces_run
